@@ -20,20 +20,28 @@ public final class HexChat extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new Listener() {
             @EventHandler
             public void onMessage(AsyncPlayerChatEvent event) {
-                String msg = event.getMessage();
-                Matcher hexMatcher = hex.matcher(msg);
-                while (hexMatcher.find()) {
-                    msg = msg
-                        .replace(hexMatcher.group(), ChatColor.of(hexMatcher.group()).toString());
+                if (event.getPlayer().hasPermission("hexchat.hex") || event.getPlayer()
+                    .hasPermission("hexchat.rgb")) {
+                    String msg = event.getMessage();
+                    if (event.getPlayer().hasPermission("hexchat.hex")) {
+                        Matcher hexMatcher = hex.matcher(msg);
+                        while (hexMatcher.find()) {
+                            msg = msg
+                                .replace(hexMatcher.group(),
+                                    ChatColor.of(hexMatcher.group()).toString());
+                        }
+                    }
+                    if (event.getPlayer().hasPermission("hexchat.rgb")) {
+                        Matcher rgbMatcher = rgb.matcher(msg);
+                        while (rgbMatcher.find()) {
+                            msg = msg.replace(rgbMatcher.group(), ChatColor
+                                .of(rgbToHexReturnStr(Integer.parseInt(rgbMatcher.group(1)),
+                                    Integer.parseInt(rgbMatcher.group(2)),
+                                    Integer.parseInt(rgbMatcher.group(3)))).toString());
+                        }
+                    }
+                    event.setMessage(msg);
                 }
-                Matcher rgbMatcher = rgb.matcher(msg);
-                while (rgbMatcher.find()) {
-                    msg = msg.replace(rgbMatcher.group(), ChatColor
-                        .of(rgbToHexReturnStr(Integer.parseInt(rgbMatcher.group(1)),
-                            Integer.parseInt(rgbMatcher.group(2)),
-                            Integer.parseInt(rgbMatcher.group(3)))).toString());
-                }
-                event.setMessage(msg);
             }
         }, this);
     }

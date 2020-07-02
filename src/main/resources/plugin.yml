@@ -3,3 +3,14 @@ version: @version@
 main: com.jih10157.hexchat.HexChat
 api-version: 1.16
 authors: [Lesser]
+
+permissions:
+  hexchat.*:
+    default: op
+    children:
+      hexchat.hex: true
+      hexchat.rgb: true
+  hexchat.hex:
+    default: op
+  hexchat.rgb:
+    default: op
