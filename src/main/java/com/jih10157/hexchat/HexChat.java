@@ -11,10 +11,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class HexChat extends JavaPlugin {
 
-    private final Pattern hex = Pattern.compile("#[0-9A-Fa-f]{6}");
-    private final Pattern rgb = Pattern.compile(
-        "#(25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?|[0-9]), ?(25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?|[0-9]), ?(25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?|[0-9])");
-
     @Override
     public void onEnable() {
         Bukkit.getPluginManager().registerEvents(new Listener() {
@@ -22,28 +18,36 @@ public final class HexChat extends JavaPlugin {
             public void onMessage(AsyncPlayerChatEvent event) {
                 if (event.getPlayer().hasPermission("hexchat.hex") || event.getPlayer()
                     .hasPermission("hexchat.rgb")) {
-                    String msg = event.getMessage();
-                    if (event.getPlayer().hasPermission("hexchat.hex")) {
-                        Matcher hexMatcher = hex.matcher(msg);
-                        while (hexMatcher.find()) {
-                            msg = msg
-                                .replace(hexMatcher.group(),
-                                    ChatColor.of(hexMatcher.group()).toString());
-                        }
-                    }
-                    if (event.getPlayer().hasPermission("hexchat.rgb")) {
-                        Matcher rgbMatcher = rgb.matcher(msg);
-                        while (rgbMatcher.find()) {
-                            msg = msg.replace(rgbMatcher.group(), ChatColor
-                                .of(rgbToHexReturnStr(Integer.parseInt(rgbMatcher.group(1)),
-                                    Integer.parseInt(rgbMatcher.group(2)),
-                                    Integer.parseInt(rgbMatcher.group(3)))).toString());
-                        }
-                    }
-                    event.setMessage(msg);
+                    event.setMessage(applyColor(event.getMessage(),
+                        event.getPlayer().hasPermission("hexchat.hex"),
+                        event.getPlayer().hasPermission("hexchat.rgb")));
                 }
             }
         }, this);
+    }
+
+    private final Pattern hex = Pattern.compile("#[0-9A-Fa-f]{6}");
+    private final Pattern rgb = Pattern.compile(
+        "#(25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?|[0-9]), ?(25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?|[0-9]), ?(25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?|[0-9])");
+
+    public String applyColor(String str, boolean applyHex, boolean applyRgb) {
+        if (applyHex) {
+            Matcher hexMatcher = hex.matcher(str);
+            while (hexMatcher.find()) {
+                str = str.replace(hexMatcher.group(),
+                    ChatColor.of(hexMatcher.group()).toString());
+            }
+        }
+        if (applyRgb) {
+            Matcher rgbMatcher = rgb.matcher(str);
+            while (rgbMatcher.find()) {
+                str = str.replace(rgbMatcher.group(), ChatColor
+                    .of(rgbToHexReturnStr(Integer.parseInt(rgbMatcher.group(1)),
+                        Integer.parseInt(rgbMatcher.group(2)),
+                        Integer.parseInt(rgbMatcher.group(3)))).toString());
+            }
+        }
+        return str;
     }
 
     public static String rgbToHexReturnStr(int r, int g, int b) {
