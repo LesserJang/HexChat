@@ -8,9 +8,24 @@ permissions:
   hexchat.*:
     default: op
     children:
-      hexchat.hex: true
-      hexchat.rgb: true
-  hexchat.hex:
+      hexchat.chat.*: true
+      hexchat.chat.hex: true
+      hexchat.chat.rgb: true
+  hexchat.chat.*:
     default: op
-  hexchat.rgb:
+    children:
+      hexchat.chat.hex: true
+      hexchat.chat.rgb: true
+  hexchat.chat.hex:
+    default: op
+  hexchat.chat.rgb:
+    default: op
+  hexchat.sign.*:
+    default: op
+    children:
+      hexchat.sign.hex: true
+      hexchat.sign.rgb: true
+  hexchat.sign.hex:
+    default: op
+  hexchat.sign.rgb:
     default: op

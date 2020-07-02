@@ -6,6 +6,7 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -16,11 +17,42 @@ public final class HexChat extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new Listener() {
             @EventHandler
             public void onMessage(AsyncPlayerChatEvent event) {
-                if (event.getPlayer().hasPermission("hexchat.hex") || event.getPlayer()
-                    .hasPermission("hexchat.rgb")) {
+                if (event.getPlayer().hasPermission("hexchat.chat.hex") || event.getPlayer()
+                    .hasPermission("hexchat.chat.rgb")) {
                     event.setMessage(applyColor(event.getMessage(),
-                        event.getPlayer().hasPermission("hexchat.hex"),
-                        event.getPlayer().hasPermission("hexchat.rgb")));
+                        event.getPlayer().hasPermission("hexchat.chat.hex"),
+                        event.getPlayer().hasPermission("hexchat.chat.rgb")));
+                }
+            }
+
+            @EventHandler
+            public void onCreateSign(SignChangeEvent event) {
+                if (event.getPlayer().hasPermission("hexchat.sign.hex") || event.getPlayer()
+                    .hasPermission("hexchat.sign.rgb")) {
+                    String line1 = event.getLine(0);
+                    if (line1 != null) {
+                        event.setLine(0, applyColor(line1,
+                            event.getPlayer().hasPermission("hexchat.sign.hex"),
+                            event.getPlayer().hasPermission("hexchat.sign.rgb")));
+                    }
+                    String line2 = event.getLine(1);
+                    if (line2 != null) {
+                        event.setLine(1, applyColor(line2,
+                            event.getPlayer().hasPermission("hexchat.sign.hex"),
+                            event.getPlayer().hasPermission("hexchat.sign.rgb")));
+                    }
+                    String line3 = event.getLine(2);
+                    if (line3 != null) {
+                        event.setLine(2, applyColor(line3,
+                            event.getPlayer().hasPermission("hexchat.sign.hex"),
+                            event.getPlayer().hasPermission("hexchat.sign.rgb")));
+                    }
+                    String line4 = event.getLine(3);
+                    if (line4 != null) {
+                        event.setLine(3, applyColor(line4,
+                            event.getPlayer().hasPermission("hexchat.sign.hex"),
+                            event.getPlayer().hasPermission("hexchat.sign.rgb")));
+                    }
                 }
             }
         }, this);
