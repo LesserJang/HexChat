@@ -1,0 +1,5 @@
+name: HexChat
+version: @version@
+main: com.jih10157.hexchat.HexChat
+api-version: 1.15
+authors: [Lesser]
